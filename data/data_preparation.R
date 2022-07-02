@@ -9,7 +9,7 @@ base_data <- base_data[, colSums(is.na(base_data)) < nrow(base_data)]
 
 # remove unnecessary column 
 base_data <- base_data  # journal type
-base_data <- subset(base_data, select = -c(language,url, ISSN, DOI, volume, issue, `alternate journal`, `author address`))
+base_data <- subset(base_data, select = -c(language,url, ISSN, volume, issue, `alternate journal`, `author address`))
 
 # remove duplicates row
 base_data <- base_data[!duplicated(base_data),]
@@ -29,5 +29,14 @@ base_data <- subset(base_data, select = -c(page1, page2))
 # extract citation counts and references counts
 base_data$citations <-  str_split_fixed(base_data$notes, ":",3)[,2] %>% str_match_all("[0-9]+") %>% unlist %>% as.numeric
 base_data$reference_count <-  str_split_fixed(base_data$notes, ":",3)[,3] %>% str_match_all("[0-9]+") %>% unlist %>% as.numeric
+
+# remove reference_count equal to 0
+base_data <- base_data %>% filter(reference_count!=0)
+
+### add 2 years impact factor of journals 
+source("data/get_journal_features.R")
+
+# merge 2 years impact factor data frame to our base data
+base_data <- left_join(base_data, impactf_df, by = c("year", "journal"))
 
 
