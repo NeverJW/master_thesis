@@ -39,4 +39,33 @@ source("data/get_journal_features.R")
 # merge 2 years impact factor data frame to our base data
 base_data <- left_join(base_data, impactf_df, by = c("year", "journal"))
 
+# add the variable which indicate the length of title 
+base_data$title_length <-
+  if_else(
+    str_count(base_data$title, " ") + 1 < 5 ,
+    "short",
+    if_else(str_count(base_data$title, " ") + 1 < 15,
+    "normal",
+    "long")
+  )
+
+# add the variable which indicate whether keywords contain the most popular words of marketing papers
+base_data$keyword_pop <-
+  str_detect(
+    base_data$keywords,
+    "brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
+  )
+
+# see how many papers does include popular words in the keyword part
+length(base_data$keyword_pop[base_data$keyword_pop == TRUE])  # 213 papers
+
+# add the variable which indicate whether abstract contain the most popular words of marketing papers
+base_data$abstract_pop <-
+  str_detect(
+    base_data$abstract,
+    "brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
+  )
+
+# see how many papers does include popular words in the abstract part
+length(base_data$abstract_pop[base_data$abstract_pop == TRUE])  # 200 papers
 
