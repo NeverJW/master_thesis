@@ -1,6 +1,6 @@
 # journal of marketing 
 # use selenium to get id of author
-get_author_id <- function(doi1, doi2, port = 400L){
+get_download_time <- function(doi1, doi2, port = 400L){
   url <- paste0("https://journals.sagepub.com/doi/metrics/", doi1, "/",
                 doi2)
  
