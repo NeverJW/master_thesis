@@ -19,6 +19,9 @@ base_data$author_number <- lengths(gregexpr(";",  base_data$author)) + 1
 base_data$author_number <-
   ifelse(str_detect(base_data$author, ";"), base_data$author_number, 1)
 
+# see how many authors does this paper have
+max(base_data$author_number, na.rm = TRUE)   # 9 authors are the maximal
+
 # calculate total pages of paper
 base_data$page1 <- str_split_fixed(base_data$pages, "-", 2)[,1]
 base_data$page2 <- str_split_fixed(base_data$pages, "-", 2)[,2]
@@ -68,4 +71,22 @@ base_data$abstract_pop <-
 
 # see how many papers does include popular words in the abstract part
 length(base_data$abstract_pop[base_data$abstract_pop == TRUE])  # 200 papers
+
+# get infos of authors
+for (i in nrow(base_data)) {
+  doi1 <- str_split(base_data$DOI, "/")[[i]][1]
+  doi2 <- str_split(base_data$DOI, "/")[[i]][2]
+  if (is.na(str_split(base_data$DOI, "/")[[i]][3]) != TRUE) {
+    doi3 <- str_split(base_data$DOI, "/")[[i]][3]
+  }
+  
+  port <- random_port(min_port = 49152, max_port = 65536)
+  
+  author_id <- scrape_google_author_id(doi1, doi2, doi3, port)
+  
+  
+}
+
+
+
 
