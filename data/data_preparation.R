@@ -43,14 +43,7 @@ source("data/get_journal_features.R")
 base_data <- left_join(base_data, impactf_df, by = c("year", "journal"))
 
 # add the variable which indicate the length of title 
-base_data$title_length <-
-  if_else(
-    str_count(base_data$title, " ") + 1 < 5 ,
-    "short",
-    if_else(str_count(base_data$title, " ") + 1 < 15,
-    "normal",
-    "long")
-  )
+base_data$title_length <- str_count(base_data$title, " ") + 1 
 
 # add the variable which indicate whether keywords contain the most popular words of marketing papers
 base_data$keyword_pop <-
