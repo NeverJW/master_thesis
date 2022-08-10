@@ -1,21 +1,35 @@
 # Source script setting up all libraries
 source("setup.R")
 
-# load excel base data from endnote 
+# load excel base data from endnote
 base_data <- read_excel("data/data_endnote.xlsx")
 
 # remove na column
-base_data <- base_data[, colSums(is.na(base_data)) < nrow(base_data)]
+base_data <-
+  base_data[, colSums(is.na(base_data)) < nrow(base_data)]
 
-# remove unnecessary column 
+# remove unnecessary column
 base_data <- base_data  # journal type
-base_data <- subset(base_data, select = -c(language,url, ISSN, volume, issue, `alternate journal`, `author address`))
+base_data <-
+  subset(
+    base_data,
+    select = -c(
+      language,
+      url,
+      ISSN,
+      volume,
+      issue,
+      `alternate journal`,
+      `author address`
+    )
+  )
 
 # remove duplicates row
-base_data <- base_data[!duplicated(base_data),]
+base_data <- base_data[!duplicated(base_data), ]
 
 # create the author numbers variable
-base_data$author_number <- lengths(gregexpr(";",  base_data$author)) + 1
+base_data$author_number <-
+  lengths(gregexpr(";",  base_data$author)) + 1
 base_data$author_number <-
   ifelse(str_detect(base_data$author, ";"), base_data$author_number, 1)
 
@@ -23,27 +37,31 @@ base_data$author_number <-
 max(base_data$author_number, na.rm = TRUE)   # 9 authors are the maximal
 
 # calculate total pages of paper
-base_data$page1 <- str_split_fixed(base_data$pages, "-", 2)[,1]
-base_data$page2 <- str_split_fixed(base_data$pages, "-", 2)[,2]
-base_data$page <- as.numeric(base_data$page2) - as.numeric(base_data$page1)
+base_data$page1 <- str_split_fixed(base_data$pages, "-", 2)[, 1]
+base_data$page2 <- str_split_fixed(base_data$pages, "-", 2)[, 2]
+base_data$page <-
+  as.numeric(base_data$page2) - as.numeric(base_data$page1)
 
 base_data <- subset(base_data, select = -c(page1, page2))
 
 # extract citation counts and references counts
-base_data$citations <-  str_split_fixed(base_data$notes, ":",3)[,2] %>% str_match_all("[0-9]+") %>% unlist %>% as.numeric
-base_data$reference_count <-  str_split_fixed(base_data$notes, ":",3)[,3] %>% str_match_all("[0-9]+") %>% unlist %>% as.numeric
+base_data$citations <-
+  str_split_fixed(base_data$notes, ":", 3)[, 2] %>% str_match_all("[0-9]+") %>% unlist %>% as.numeric
+base_data$reference_count <-
+  str_split_fixed(base_data$notes, ":", 3)[, 3] %>% str_match_all("[0-9]+") %>% unlist %>% as.numeric
 
 # remove reference_count equal to 0
-base_data <- base_data %>% filter(reference_count!=0)
+base_data <- base_data %>% filter(reference_count != 0)
 
-### add 2 years impact factor of journals 
+### add 2 years impact factor of journals
 source("data/get_journal_features.R")
 
 # merge 2 years impact factor data frame to our base data
-base_data <- left_join(base_data, impactf_df, by = c("year", "journal"))
+base_data <-
+  left_join(base_data, impactf_df, by = c("year", "journal"))
 
-# add the variable which indicate the length of title 
-base_data$title_length <- str_count(base_data$title, " ") + 1 
+# add the variable which indicate the length of title
+base_data$title_length <- str_count(base_data$title, " ") + 1
 
 # add the variable which indicate whether keywords contain the most popular words of marketing papers
 base_data$keyword_pop <-
@@ -65,8 +83,13 @@ base_data$abstract_pop <-
 # see how many papers does include popular words in the abstract part
 length(base_data$abstract_pop[base_data$abstract_pop == TRUE])  # 200 papers
 
+# remove na of variable DOI
+
+
+
 # get infos of authors
 for (i in nrow(base_data)) {
+  # split the doi to construct the url 
   doi1 <- str_split(base_data$DOI, "/")[[i]][1]
   doi2 <- str_split(base_data$DOI, "/")[[i]][2]
   if (is.na(str_split(base_data$DOI, "/")[[i]][3]) != TRUE) {
@@ -75,7 +98,8 @@ for (i in nrow(base_data)) {
   
   port <- random_port(min_port = 49152, max_port = 65536)
   
-  author_id <- scrape_google_author_id(doi1, doi2, doi3, port)
+  n <- base_data$author_number[[i]]
+  author_id <- scrape_google_author_id(doi1, doi2, doi3, n, port)
   
   
 }
