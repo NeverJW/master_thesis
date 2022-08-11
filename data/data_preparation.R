@@ -83,27 +83,52 @@ base_data$abstract_pop <-
 # see how many papers does include popular words in the abstract part
 length(base_data$abstract_pop[base_data$abstract_pop == TRUE])  # 200 papers
 
-# remove na of variable DOI
+################################### get infos of author ##################
+# remove na of variable DOI and author number
+base_data <- base_data %>% drop_na(DOI)
+base_data <- base_data %>% drop_na(author_number)
 
+# create a driver from Rselenium
+port <- random_port(min_port = 49152, max_port = 65536)
+rD <- rsDriver(browser = "chrome", port = port, chromever="103.0.5060.24")
 
+# get the client
+remDr <- rD$client
+
+# set time outs to give the page the change to first fully load before
+# we try to get information form it
+remDr$setTimeout(type = "implicit", milliseconds = 10000)
+remDr$setTimeout(type = "page load", milliseconds = 10000)
+
+# create 4 columns of author infos (because there are maximal 4 authors which has individual website link)
+base_data$author_id1 <- NA
+base_data$author_id2 <- NA
+base_data$author_id3 <- NA
+base_data$author_id4 <- NA
 
 # get infos of authors
-for (i in nrow(base_data)) {
+for (i in 1:nrow(base_data)) {
   # split the doi to construct the url 
   doi1 <- str_split(base_data$DOI, "/")[[i]][1]
   doi2 <- str_split(base_data$DOI, "/")[[i]][2]
-  if (is.na(str_split(base_data$DOI, "/")[[i]][3]) != TRUE) {
+  if (is.na(str_split(base_data$DOI, "/")[[i]][3]) != TRUE) { # if there is a third part of doi
     doi3 <- str_split(base_data$DOI, "/")[[i]][3]
   }
   
-  port <- random_port(min_port = 49152, max_port = 65536)
-  
+  # n equal to author number
   n <- base_data$author_number[[i]]
-  author_id <- scrape_google_author_id(doi1, doi2, doi3, n, port)
   
+  # get the author ids
+  author_id_data_frame <- scrape_google_author_id(doi1, doi2, doi3, n, port)
   
+  # fill the base data
+  base_data[i,21:24] <- author_id_data_frame
 }
 
 
+get_citation_history(author_id)
+get_profile(author_id)$h_index
+get_profile(author_id)$total_cites
+get_publications(author_id)
 
 
