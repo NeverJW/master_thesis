@@ -126,9 +126,40 @@ for (i in 1:nrow(base_data)) {
 }
 
 
+#### after getting the id of author
+# add variables of authors through scholar_test package
+# need 2 infos each author, so add 8 blank columns 
+namevector <- c("hindex_au1", "hindex_au2", "hindex_au3", "hindex_au4", "totalcite_au1", "totalcite_au2", "totalcite_au3", "totalcite_au4")
+base_data[ ,namevector] <- NA
+
+# get h_index of each author and total number of citations of each author
+for (i in 1:nrow(base_data)){
+  if(is.na(base_data$author_id1[[i]])!= TRUE){
+    base_data[i,25] <- get_profile(base_data$author_id1[[i]])$h_index
+    base_data[i,29] <- get_profile(base_data$author_id1[[i]])$total_cites
+    
+  }
+  
+  if(is.na(base_data$author_id2[[i]])!= TRUE){
+    base_data[i,26] <- get_profile(base_data$author_id2[[i]])$h_index
+    base_data[i,30] <- get_profile(base_data$author_id2[[i]])$total_cites
+    
+  }
+  
+  if(is.na(base_data$author_id3[[i]])!= TRUE){
+    base_data[i,27] <- get_profile(base_data$author_id3[[i]])$h_index
+    base_data[i,31] <- get_profile(base_data$author_id3[[i]])$total_cites
+    
+  }
+  
+  if(is.na(base_data$author_id4[[i]])!= TRUE){
+    base_data[i,28] <- get_profile(base_data$author_id4[[i]])$h_index
+    base_data[i,32] <- get_profile(base_data$author_id4[[i]])$total_cites
+    
+  }
+}
+
 get_citation_history(author_id)
-get_profile(author_id)$h_index
 get_profile(author_id)$total_cites
-get_publications(author_id)
 
 
