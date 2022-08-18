@@ -159,7 +159,16 @@ for (i in 1:nrow(base_data)){
   }
 }
 
-get_citation_history(author_id)
-get_profile(author_id)$total_cites
+# check whether all data is scraped 
+which(is.na(base_data$totalcite_au1), arr.ind=TRUE)
+
+which(is.na(base_data$author_id1), arr.ind=TRUE) 
+# equal, the infos of author are all scraped 
+
+# create a new variable which is the max value of h_index of all authors and the mean value of 
+# total citations of all authors
+base_data$m_hindex <- rowMeans(base_data[,25:28],na.rm = TRUE)
+base_data$max_cite <- apply(base_data[,29:32], 1, max, na.rm=TRUE)
+
 
 
