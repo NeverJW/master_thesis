@@ -9,6 +9,7 @@ if (!require("rvest")) install.packages("rvest")
 if (!require("miceadds")) install.packages("miceadds")
 if (!require("pbdZMQ")) install.packages("pbdZMQ")
 if (!require("matrixStats")) install.packages("matrixStats")
+if (!require("caret")) install.packages("caret")
 
 
 library(tidyverse)
@@ -21,6 +22,7 @@ library(rvest)
 library(miceadds)
 library(pbdZMQ)
 library(matrixStats)
+library(caret)
 
 # Source all R-files in the Functions folder
 source.all("function/", grepstring="\\.R")
