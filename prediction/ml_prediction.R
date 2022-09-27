@@ -2,19 +2,19 @@
 source("setup.R")
 
 # examine the dataset
-str(base_data)
+str(base_data_with_date)
 
 # convert variable impactf to string
-base_data$impactf <- as.numeric(base_data$impactf)
+base_data_with_date$impactf <- as.numeric(base_data_with_date$impactf)
 
 # examine the distribution of citations
-summary(base_data$citations)
-hist(base_data$citations,
+summary(base_data_with_date$citations)
+hist(base_data_with_date$citations,
      breaks = 400,
      xlim = c(0, 500))
 
 # delete the outline which indicate citations >5000
-model_data <- base_data %>% filter(citations < 5000 &citations >100)
+model_data <- base_data_with_date %>% filter(citations < 5000 &citations >5)
 
 # select the variable we used
 model_data <-
@@ -28,7 +28,8 @@ model_data <-
     keyword_pop,
     abstract_pop,
     max_hindex,
-    max_cite
+    max_cite,
+    recency
   )
 
 # remove na value

@@ -243,9 +243,12 @@ for (i in 1:nrow(base_data_with_date)) {
     base_data_with_date$interval[i] <- 2
   } else if (base_data_with_date$year[i] == 2021) {
     base_data_with_date$interval[i] <- 1
-  } else if (is.na(base_data_with_date$year[i])) {
-    base_data_with_date$interval[i] <- NA
+  } else if (base_data_with_date$year[i] == 2022) {
+    base_data_with_date$interval[i] <- 0
   }
   
   
 }
+
+base_data_with_date$recency <- NA
+base_data_with_date$recency <- base_data_with_date$interval*12+base_data_with_date$month
