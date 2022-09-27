@@ -10,7 +10,9 @@ if (!require("miceadds")) install.packages("miceadds")
 if (!require("pbdZMQ")) install.packages("pbdZMQ")
 if (!require("matrixStats")) install.packages("matrixStats")
 if (!require("caret")) install.packages("caret")
-
+if (!require("elasticnet")) install.packages("elasticnet")
+if (!require("kernlab")) install.packages("kernlab")
+if (!require("randomForest")) install.packages("randomForest")
 
 library(tidyverse)
 library(xml2)
@@ -23,6 +25,9 @@ library(miceadds)
 library(pbdZMQ)
 library(matrixStats)
 library(caret)
+library(elasticnet)
+library(kernlab)
+library(randomForest)
 
 # Source all R-files in the Functions folder
 source.all("function/", grepstring="\\.R")

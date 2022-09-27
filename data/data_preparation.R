@@ -169,6 +169,83 @@ which(is.na(base_data$author_id1), arr.ind=TRUE)
 # total citations of all authors
 base_data$m_hindex <- rowMeans(base_data[,25:28],na.rm = TRUE)
 base_data$max_cite <- apply(base_data[,29:32], 1, max, na.rm=TRUE)
+base_data$max_hindex <- apply(base_data[,25:28], 1, max, na.rm=TRUE)
+base_data$m_cite <- rowMeans(base_data[,29:32], na.rm=TRUE)
+
+# delect the na value and zero value of variable citations
+base_data <- base_data[!is.na(base_data$citations),] 
+base_data <- base_data %>% filter(citations!=0)
+
+# create the new variable as recency
+base_data_with_date$month <- NA
+base_data_with_date <- base_data[!is.na(base_data$date),] 
+
+# create a new variable as month
+for (i in 1:nrow(base_data_with_date)) {
+  if (str_detect(base_data_with_date$date[i], "Jan")) {
+    base_data_with_date$month[i] <- 1
+  } else if (str_detect(base_data_with_date$date[i], "Feb")) {
+    base_data_with_date$month[i] <- 2
+  } else if (str_detect(base_data_with_date$date[i], "Mar")) {
+    base_data_with_date$month[i] <- 3
+  } else if (str_detect(base_data_with_date$date[i], "Apr")) {
+    base_data_with_date$month[i] <- 4
+  } else if (str_detect(base_data_with_date$date[i], "May")) {
+    base_data_with_date$month[i] <- 5
+  } else if (str_detect(base_data_with_date$date[i], "Jun")) {
+    base_data_with_date$month[i] <- 6
+  } else if (str_detect(base_data_with_date$date[i], "Jul")) {
+    base_data_with_date$month[i] <- 7
+  } else if (str_detect(base_data_with_date$date[i], "Aug")) {
+    base_data_with_date$month[i] <- 8
+  } else if (str_detect(base_data_with_date$date[i], "Sep")) {
+    base_data_with_date$month[i] <- 9
+  } else if (str_detect(base_data_with_date$date[i], "Oct")) {
+    base_data_with_date$month[i] <- 10
+  } else if (str_detect(base_data_with_date$date[i], "Nov")) {
+    base_data_with_date$month[i] <- 11
+  } else if (str_detect(base_data_with_date$date[i], "Dec")) {
+    base_data_with_date$month[i] <- 12
+  } else if (is.na(base_data_with_date$date[i])) {
+    base_data_with_date$month[i] <- NA
+  }
+  
+  
+}
+
+# create a new variable as year interval to 2022
+base_data_with_date$interval <- NA
+base_data_with_date <- base_data_with_date[!is.na(base_data_with_date$year),] 
 
 
-
+for (i in 1:nrow(base_data_with_date)) {
+  if (base_data_with_date$year[i] == 2010) {
+    base_data_with_date$interval[i] <- 12
+  } else if (base_data_with_date$year[i] == 2011) {
+    base_data_with_date$interval[i] <- 11
+  } else if (base_data_with_date$year[i] == 2012) {
+    base_data_with_date$interval[i] <- 10
+  } else if (base_data_with_date$year[i] == 2013) {
+    base_data_with_date$interval[i] <- 9
+  } else if (base_data_with_date$year[i] == 2014) {
+    base_data_with_date$interval[i] <- 8
+  } else if (base_data_with_date$year[i] == 2015) {
+    base_data_with_date$interval[i] <- 7
+  } else if (base_data_with_date$year[i] == 2016) {
+    base_data_with_date$interval[i] <- 6
+  } else if (base_data_with_date$year[i] == 2017) {
+    base_data_with_date$interval[i] <- 5
+  } else if (base_data_with_date$year[i] == 2018) {
+    base_data_with_date$interval[i] <- 4
+  } else if (base_data_with_date$year[i] == 2019) {
+    base_data_with_date$interval[i] <- 3
+  } else if (base_data_with_date$year[i] == 2020) {
+    base_data_with_date$interval[i] <- 2
+  } else if (base_data_with_date$year[i] == 2021) {
+    base_data_with_date$interval[i] <- 1
+  } else if (is.na(base_data_with_date$year[i])) {
+    base_data_with_date$interval[i] <- NA
+  }
+  
+  
+}
