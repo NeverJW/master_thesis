@@ -90,7 +90,7 @@ base_data <- base_data %>% drop_na(author_number)
 
 # create a driver from Rselenium
 port <- random_port(min_port = 49152, max_port = 65536)
-rD <- rsDriver(browser = "chrome", port = port, chromever="103.0.5060.24")
+rD <- rsDriver(browser = "chrome", port = port, chromever="105.0.5195.19")
 
 # get the client
 remDr <- rD$client
@@ -252,3 +252,36 @@ for (i in 1:nrow(base_data_with_date)) {
 
 base_data_with_date$recency <- NA
 base_data_with_date$recency <- base_data_with_date$interval*12+base_data_with_date$month
+
+
+### scrape citations from google scholar
+# create a driver from Rselenium
+port <- random_port(min_port = 49152, max_port = 65536)
+rD <- rsDriver(browser = "chrome", port = port, chromever="105.0.5195.19")
+
+# get the client
+remDr <- rD$client
+
+# set time outs to give the page the change to first fully load before
+# we try to get information form it
+remDr$setTimeout(type = "implicit", milliseconds = 10000)
+remDr$setTimeout(type = "page load", milliseconds = 10000)
+
+# get google citations 
+base_data$citation <- NA
+
+for (i in 1:nrow(base_data)) {
+  # split the doi to construct the url 
+  doi1 <- str_split(base_data$DOI, "/")[[i]][1]
+  doi2 <- str_split(base_data$DOI, "/")[[i]][2]
+  if (is.na(str_split(base_data$DOI, "/")[[i]][3]) != TRUE) { # if there is a third part of doi
+    doi3 <- str_split(base_data$DOI, "/")[[i]][3]
+  }
+  
+  # get the author ids
+  citations <- scrape_google_citations(doi1, doi2, doi3, port)
+  
+  # fill the base data
+  base_data[i,38] <- citations
+}
+
