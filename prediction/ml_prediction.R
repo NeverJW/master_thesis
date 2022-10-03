@@ -8,18 +8,18 @@ str(base_data_with_date)
 base_data_with_date$impactf <- as.numeric(base_data_with_date$impactf)
 
 # examine the distribution of citations
-summary(base_data_with_date$citations)
-hist(base_data_with_date$citations,
+summary(base_data_with_date$citation)
+hist(base_data_with_date$citation,
      breaks = 400,
      xlim = c(0, 500))
 
-# delete the outline which indicate citations >5000
-model_data <- base_data_with_date %>% filter(citations < 5000 &citations >5)
+# delete the outline which indicate citations >700
+model_data <- base_data_with_date %>% filter(citation < 700 &citation >5)
 
 # select the variable we used
 model_data <-
   model_data %>% select(
-    citations,
+    citation,
     author_number,
     page,
     reference_count,
@@ -29,7 +29,9 @@ model_data <-
     abstract_pop,
     max_hindex,
     max_cite,
-    recency
+    recency,
+    m_cite,
+    m_hindex
   )
 
 # remove na value
@@ -42,7 +44,7 @@ model_data <- model_data[!is.infinite(rowSums(model_data)),]
 set.seed(42)
 # partition data in training and test sample: 80% vs. 20%
 trainIndex <-
-  caret::createDataPartition(model_data$citations,
+  caret::createDataPartition(model_data$citation,
                              p = 0.8,
                              times = 1,
                              list = FALSE)
@@ -50,12 +52,12 @@ trainIndex <-
 df_train <- model_data[trainIndex,] # training sample
 df_test <- model_data[-trainIndex,] # test sample
 
-summary(df_train$citations)
-summary(df_test$citations) # similar
+summary(df_train$citation)
+summary(df_test$citation) # similar
 
 # linear regression
 lm_model <-
-  lm(citations ~ .,
+  lm(citation ~ .,
      data = df_train)
 
 # the dott means that all rest variables
