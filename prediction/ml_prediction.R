@@ -13,8 +13,9 @@ hist(base_data_with_date$citation,
      breaks = 400,
      xlim = c(0, 500))
 
-# delete the outline which indicate citations >700
-model_data <- base_data_with_date %>% filter(citation < 700 &citation >5)
+# delete the outline which indicate citations > 700
+model_data <-
+  base_data_with_date %>% filter(citation < 700 & citation > 5)
 
 # select the variable we used
 model_data <-
@@ -27,11 +28,13 @@ model_data <-
     title_length,
     keyword_pop,
     abstract_pop,
-    max_hindex,
+    # max_hindex,
     max_cite,
     recency,
     m_cite,
-    m_hindex
+    m_hindex,
+    superstar1
+    # minhindex 
   )
 
 # remove na value

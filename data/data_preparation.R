@@ -67,7 +67,7 @@ base_data$title_length <- str_count(base_data$title, " ") + 1
 base_data$keyword_pop <-
   str_detect(
     base_data$keywords,
-    "brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
+    "green marketing|innovation|influencers|promotions|advertising|sales|consumers|consumer|multichannel|decision-making|performance|brand|e-commerce|impact|model|technology|recommendation|identity|consumption|brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
   )
 
 # see how many papers does include popular words in the keyword part
@@ -314,3 +314,47 @@ for (i in 1:nrow(base_data_with_date)) {
   }
 
 }
+
+
+# include a dummy variable to indicate the superstar
+base_data_with_date$superstar1 <- NA
+for (i in 1:nrow(base_data_with_date)) {
+  
+if(base_data_with_date$max_hindex[i] > 30){
+  base_data_with_date$superstar1[i] <- 1
+} else {base_data_with_date$superstar1[i] <- 0}
+
+}
+
+# include minimal hindex
+base_data_with_date$minhindex <- NA
+base_data_with_date$minhindex <- apply(base_data_with_date[,25:28], 1, min, na.rm=TRUE)
+
+# number of articles of each paper
+base_data_with_date$num1 <- NA
+base_data_with_date$num2 <- NA
+base_data_with_date$num3 <- NA
+base_data_with_date$num4 <- NA
+
+for (i in 1:nrow(base_data_with_date)){
+  if(is.na(base_data_with_date$author_id1[[i]])!= TRUE){
+    base_data_with_date[i,44] <- get_num_articles(base_data_with_date$author_id1[[i]])
+  }
+  
+  if(is.na(base_data_with_date$author_id2[[i]])!= TRUE){
+    base_data_with_date[i,45] <- get_num_articles(base_data_with_date$author_id1[[i]])
+    
+  }
+  
+  if(is.na(base_data_with_date$author_id3[[i]])!= TRUE){
+    base_data_with_date[i,46] <- get_num_articles(base_data_with_date$author_id1[[i]])
+    
+  }
+  
+  if(is.na(base_data_with_date$author_id4[[i]])!= TRUE){
+    base_data_with_date[i,47] <- get_num_articles(base_data_with_date$author_id1[[i]])
+    
+  }
+}
+
+
