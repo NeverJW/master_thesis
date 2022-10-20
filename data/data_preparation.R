@@ -67,7 +67,7 @@ base_data$title_length <- str_count(base_data$title, " ") + 1
 base_data$keyword_pop <-
   str_detect(
     base_data$keywords,
-    "green marketing|innovation|influencers|promotions|advertising|sales|consumers|consumer|multichannel|decision-making|performance|brand|e-commerce|impact|model|technology|recommendation|identity|consumption|brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
+    "brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
   )
 
 # see how many papers does include popular words in the keyword part
@@ -317,13 +317,38 @@ for (i in 1:nrow(base_data_with_date)) {
 
 
 # include a dummy variable to indicate the superstar
-base_data_with_date$superstar1 <- NA
+# base_data_with_date$superstar1 <- NA
+# for (i in 1:nrow(base_data_with_date)) {
+#   
+#   if (base_data_with_date$hindex_au1[i] > 50 & is.na(base_data_with_date$hindex_au1[i])==FALSE) {
+#     base_data_with_date$superstar1[i] <- 1
+#   } else if (base_data_with_date$hindex_au2[i] > 50 & is.na(base_data_with_date$hindex_au2[i])==FALSE) {
+#     base_data_with_date$superstar1[i] <- 1
+#   } else if (base_data_with_date$hindex_au3[i] > 50 & is.na(base_data_with_date$hindex_au3[i])==FALSE) {
+#     base_data_with_date$superstar1[i] <- 1
+#   } else if (base_data_with_date$hindex_au4[i] > 50 & is.na(base_data_with_date$hindex_au4[i])==FALSE) {
+#     base_data_with_date$superstar1[i] <- 1
+#   } else {
+#     base_data_with_date$superstar1[i] <- 0
+#   }
+#   
+# }
+
+base_data_with_date$superstar2 <- NA
 for (i in 1:nrow(base_data_with_date)) {
   
-if(base_data_with_date$max_hindex[i] > 30){
-  base_data_with_date$superstar1[i] <- 1
-} else {base_data_with_date$superstar1[i] <- 0}
-
+  if (base_data_with_date$mean1_ci[i] > 50 & is.na(base_data_with_date$mean1_ci[i])==FALSE) {
+    base_data_with_date$superstar2[i] <- 1
+  } else if (base_data_with_date$mean2_ci[i] > 50 & is.na(base_data_with_date$mean2_ci[i])==FALSE) {
+    base_data_with_date$superstar2[i] <- 1
+  } else if (base_data_with_date$mean3_ci[i] > 50 & is.na(base_data_with_date$mean3_ci[i])==FALSE) {
+    base_data_with_date$superstar2[i] <- 1
+  } else if (base_data_with_date$mean4_ci[i] > 50 & is.na(base_data_with_date$mean4_ci[i])==FALSE) {
+    base_data_with_date$superstar2[i] <- 1
+  } else {
+    base_data_with_date$superstar2[i] <- 0
+  }
+  
 }
 
 # include minimal hindex
@@ -342,19 +367,98 @@ for (i in 1:nrow(base_data_with_date)){
   }
   
   if(is.na(base_data_with_date$author_id2[[i]])!= TRUE){
-    base_data_with_date[i,45] <- get_num_articles(base_data_with_date$author_id1[[i]])
+    base_data_with_date[i,45] <- get_num_articles(base_data_with_date$author_id2[[i]])
     
   }
   
   if(is.na(base_data_with_date$author_id3[[i]])!= TRUE){
-    base_data_with_date[i,46] <- get_num_articles(base_data_with_date$author_id1[[i]])
+    base_data_with_date[i,46] <- get_num_articles(base_data_with_date$author_id3[[i]])
     
   }
   
   if(is.na(base_data_with_date$author_id4[[i]])!= TRUE){
-    base_data_with_date[i,47] <- get_num_articles(base_data_with_date$author_id1[[i]])
+    base_data_with_date[i,47] <- get_num_articles(base_data_with_date$author_id4[[i]])
     
   }
 }
 
+# mean of citation for each author
+base_data_with_date$mean1_ci <- NA
+base_data_with_date$mean2_ci <- NA
+base_data_with_date$mean3_ci <- NA
+base_data_with_date$mean4_ci <- NA
 
+for (i in 1:nrow(base_data_with_date)){
+  base_data_with_date$mean1_ci[i] <- base_data_with_date$totalcite_au1[i]/base_data_with_date$num1[i]
+  base_data_with_date$mean2_ci[i] <- base_data_with_date$totalcite_au2[i]/base_data_with_date$num2[i]
+  base_data_with_date$mean3_ci[i] <- base_data_with_date$totalcite_au3[i]/base_data_with_date$num3[i]
+  base_data_with_date$mean4_ci[i] <- base_data_with_date$totalcite_au4[i]/base_data_with_date$num4[i]
+  
+  
+}
+
+base_data_with_date$meanci_max <- NA
+base_data_with_date$meanci_min <- NA
+base_data_with_date$meanci_mean <- NA
+
+
+base_data_with_date$meanci_max <- apply(base_data_with_date[,48:51], 1, max, na.rm=TRUE)
+base_data_with_date$meanci_min <- apply(base_data_with_date[,48:51], 1, min, na.rm=TRUE)
+base_data_with_date$meanci_mean <- rowMeans(base_data_with_date[,48:51],na.rm = TRUE)
+
+
+# citation of each author at recent year
+base_data_with_date$cite21_1 <- NA
+base_data_with_date$cite21_2 <- NA
+base_data_with_date$cite21_3 <- NA
+base_data_with_date$cite21_4 <- NA
+
+for (i in 1:nrow(base_data_with_date)){
+  if(is.na(base_data_with_date$author_id1[[i]])!= TRUE){
+    base_data_with_date[i,56] <- get_citation_history(base_data_with_date$author_id1[[i]]) %>% filter(year==2021) %>% select(cites)
+  }
+  
+  if(is.na(base_data_with_date$author_id2[[i]])!= TRUE){
+    base_data_with_date[i,57] <- get_citation_history(base_data_with_date$author_id2[[i]]) %>% filter(year==2021) %>% select(cites)
+    
+  }
+  
+  if(is.na(base_data_with_date$author_id3[[i]])!= TRUE){
+    base_data_with_date[i,58] <- get_citation_history(base_data_with_date$author_id3[[i]]) %>% filter(year==2021) %>% select(cites)
+    
+  }
+  
+  if(is.na(base_data_with_date$author_id4[[i]])!= TRUE){
+    base_data_with_date[i,59] <- get_citation_history(base_data_with_date$author_id4[[i]]) %>% filter(year==2021) %>% select(cites)
+    
+  }
+}
+
+# create the max, min and the mean of the citations of each authors
+base_data_with_date$cinew_max <- NA
+base_data_with_date$cinew_min <- NA
+base_data_with_date$cinew_mean <- NA
+
+
+base_data_with_date$cinew_max <- apply(base_data_with_date[,56:59], 1, max, na.rm=TRUE)
+base_data_with_date$cinew_min <- apply(base_data_with_date[,56:59], 1, min, na.rm=TRUE)
+base_data_with_date$cinew_mean <- rowMeans(base_data_with_date[,56:59],na.rm = TRUE)
+
+
+
+base_data_with_date$superstar3 <- NA
+for (i in 1:nrow(base_data_with_date)) {
+  
+  if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
+    base_data_with_date$superstar3[i] <- 1
+  } else if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
+    base_data_with_date$superstar3[i] <- 1
+  } else if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
+    base_data_with_date$superstar3[i] <- 1
+  } else if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
+    base_data_with_date$superstar3[i] <- 1
+  } else {
+    base_data_with_date$superstar3[i] <- 0
+  }
+  
+}

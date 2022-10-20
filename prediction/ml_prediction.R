@@ -8,14 +8,15 @@ str(base_data_with_date)
 base_data_with_date$impactf <- as.numeric(base_data_with_date$impactf)
 
 # examine the distribution of citations
+summary(base_data_with_date)
 summary(base_data_with_date$citation)
 hist(base_data_with_date$citation,
      breaks = 400,
      xlim = c(0, 500))
 
-# delete the outline which indicate citations > 700
+# delete the outline which indicate citations > 0
 model_data <-
-  base_data_with_date %>% filter(citation < 700 & citation > 5)
+  base_data_with_date %>% filter(citation < 1000 & citation > 0 & pages > 1) 
 
 # select the variable we used
 model_data <-
@@ -29,16 +30,33 @@ model_data <-
     keyword_pop,
     abstract_pop,
     # max_hindex,
-    max_cite,
+    # max_cite,
     recency,
-    m_cite,
-    m_hindex,
-    superstar1
-    # minhindex 
+    # m_cite,
+    # m_hindex,
+    # hindex_au1,
+    # hindex_au2,
+    # superstar2,
+    superstar3,
+    # minhindex,
+    # meanci_min,
+    # meanci_mean,
+    # meanci_max,
+    # mean1_ci,
+    # mean2_ci,
+    # num1,
+    # num2,
+    # cinew_max,
+    # cinew_min
+    # cinew_mean
+    cite21_1,
+    cite21_2
+    # cite21_3,
+    # cite21_4
   )
 
 # remove na value
-model_data <- na.omit(model_data)
+# model_data <- na.omit(model_data)
 
 # remove -inf value
 model_data <- model_data[!is.infinite(rowSums(model_data)),]
@@ -67,7 +85,7 @@ lm_model <-
 summary(lm_model)
 
 d <-
-  data.frame(actual = df_test$citations,
+  data.frame(actual = df_test$citation,
              predicted = predict(lm_model, df_test))
 
 # plot actual vs. predicted
@@ -117,7 +135,7 @@ enet_model$bestTune  # LASSO
 ######################### svm regression ###################
 svm_model <-
   ksvm(
-    citations ~ author_number + page + reference_count + impactf + title_length + keyword_pop + abstract_pop + m_hindex + max_cite,
+    citations ~ .,
     data = df_train,
     kernel = "vanilladot"
   )
