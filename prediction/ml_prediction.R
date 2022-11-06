@@ -14,10 +14,15 @@ hist(base_data_with_date$citation,
      breaks = 400,
      xlim = c(0, 500))
 
-# delete the outline which indicate citations > 0
-model_data <-
-  base_data_with_date %>% filter(citation < 1000 & citation > 0 & pages > 1) 
 
+# delete the outline which indicate citations > 0
+# model_data <-
+#   data_with_date %>% filter(citation < 1000 & citation > 2 & page > 1) 
+
+# model_data <-
+#   base_data_with_date %>% filter(citation < 1000 & citation > 2 & pages > 1) 
+# 
+# base_data_with_date_final <- base_data_with_date[,-c(21:24,42:50)]
 # select the variable we used
 model_data <-
   model_data %>% select(
@@ -27,39 +32,45 @@ model_data <-
     reference_count,
     impactf,
     title_length,
-    keyword_pop,
     abstract_pop,
-    # max_hindex,
-    # max_cite,
+    max_hindex,
+    max_cite,
+    # totalcite_au1,
+    # totalcite_au2,
     recency,
-    # m_cite,
-    # m_hindex,
-    # hindex_au1,
-    # hindex_au2,
-    # superstar2,
+    m_cite,
+    m_hindex,
+    hindex_au1,
+    hindex_au2,
     superstar3,
-    # minhindex,
+    minhindex,
+    num1,
+    num2,
     # meanci_min,
     # meanci_mean,
     # meanci_max,
     # mean1_ci,
     # mean2_ci,
-    # num1,
-    # num2,
     # cinew_max,
-    # cinew_min
-    # cinew_mean
+    cinew_min,
+    # cinew_mean,
     cite21_1,
-    cite21_2
+    cite21_2,
     # cite21_3,
     # cite21_4
+    commentary,
+    # editorial,
+    rejoinder,
+    diff
   )
 
 # remove na value
-# model_data <- na.omit(model_data)
+model_data <- model_data %>% filter(!is.na(citation))
 
 # remove -inf value
 model_data <- model_data[!is.infinite(rowSums(model_data)),]
+# model_data <- model_data[is.finite(model_data$minhindex),]
+# model_data <- model_data[is.finite(model_data$cinew_min),]
 
 ### linear regression
 set.seed(42)
@@ -135,7 +146,7 @@ enet_model$bestTune  # LASSO
 ######################### svm regression ###################
 svm_model <-
   ksvm(
-    citations ~ .,
+    citation ~ .,
     data = df_train,
     kernel = "vanilladot"
   )
@@ -143,7 +154,7 @@ svm_model <-
 pred_svm <- predict(svm_model, df_test, type = "response")
 
 # evaluate performance
-mean(abs(df_test$citations - pred_svm)) # package kernlab
+mean(abs(df_test$citation - pred_svm)) # package kernlab
 
 ######################### random forest ###################
 # run random forest model
@@ -151,8 +162,9 @@ set.seed(42)
 data_rf <- na.omit(model_data)
 
 # partition data in training and test sample: 80% vs. 20%
+set.seed(42)
 trainIndex <-
-  caret::createDataPartition(data_rf$citations,
+  caret::createDataPartition(data_rf$citation,
                              p = 0.8,
                              times = 1,
                              list = FALSE)
@@ -161,13 +173,12 @@ trainIndex <-
 df_train <- data_rf[trainIndex,] # training sample
 df_test <- data_rf[-trainIndex,]
 
-rf <- randomForest(citations ~ ., data = df_train)
+rf <- randomForest(citation ~ ., data = df_train)
 
 # predicted on testing data
 pred_rf <- predict(rf, df_test)
 
 # see the performance
-confusionMatrix(table(pred_rf, df_test$citations))
-
+rf
 
 
