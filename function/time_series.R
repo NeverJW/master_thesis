@@ -1,16 +1,4 @@
 ### scrape citations from google scholar
-# create a driver from Rselenium
-port <- random_port(min_port = 49152, max_port = 65536)
-rD <- rsDriver(browser = "chrome", port = port, chromever="107.0.5304.62")
-
-# get the client
-remDr <- rD$client
-
-# set time outs to give the page the change to first fully load before
-# we try to get information form it
-remDr$setTimeout(type = "implicit", milliseconds = 10000)
-remDr$setTimeout(type = "page load", milliseconds = 10000)
-
 
 scrape_google_citations_year <-
   function(doi1, doi2, doi3, year, port = 800L) {
@@ -58,16 +46,16 @@ scrape_google_citations_year <-
         year
       )
     
-    
     # navigate to the created url
     remDr$navigate(citations_url)
-    Sys.sleep(1)
+    Sys.sleep(2)
     
     num_citation <- read_html(remDr$getPageSource()[[1]]) %>%
       html_elements(css="#gs_ab_md .gs_ab_mdw")
     
     num_citation <- as.numeric(str_extract(num_citation[1], "\\d+"))
     
+    Sys.sleep(2)
     
     return(num_citation)
   }

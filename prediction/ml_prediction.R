@@ -16,30 +16,27 @@ hist(base_data_with_date$citation,
 
 
 # delete the outline which indicate citations > 0
-# model_data <-
-#   data_with_date %>% filter(citation < 1000 & citation > 2 & page > 1) 
+model_data <-
+   model_data %>% filter(citation < 1300 & page > 1) 
 
-# model_data <-
-#   base_data_with_date %>% filter(citation < 1000 & citation > 2 & pages > 1) 
-# 
 # base_data_with_date_final <- base_data_with_date[,-c(21:24,42:50)]
 # select the variable we used
 model_data <-
   model_data %>% select(
-    citation,
+    # citation,
     author_number,
     page,
     reference_count,
     impactf,
     title_length,
     abstract_pop,
-    max_hindex,
-    max_cite,
+    # max_hindex,
+    # max_cite,
     # totalcite_au1,
     # totalcite_au2,
     recency,
-    m_cite,
-    m_hindex,
+    # m_cite,
+    # m_hindex,
     hindex_au1,
     hindex_au2,
     superstar3,
@@ -57,15 +54,17 @@ model_data <-
     cite21_1,
     cite21_2,
     # cite21_3,
-    # cite21_4
+    # cite21_4,
     commentary,
     # editorial,
-    rejoinder,
-    diff
+    # rejoinder,
+    diff,
+    aggre_21_ci,
+    agg_first_two
   )
 
 # remove na value
-model_data <- model_data %>% filter(!is.na(citation))
+# model_data <- model_data %>% filter(!is.na(citation))
 
 # remove -inf value
 model_data <- model_data[!is.infinite(rowSums(model_data)),]
@@ -76,7 +75,7 @@ model_data <- model_data[!is.infinite(rowSums(model_data)),]
 set.seed(42)
 # partition data in training and test sample: 80% vs. 20%
 trainIndex <-
-  caret::createDataPartition(model_data$citation,
+  caret::createDataPartition(model_data$aggre_21_ci,
                              p = 0.8,
                              times = 1,
                              list = FALSE)
@@ -84,12 +83,12 @@ trainIndex <-
 df_train <- model_data[trainIndex,] # training sample
 df_test <- model_data[-trainIndex,] # test sample
 
-summary(df_train$citation)
-summary(df_test$citation) # similar
+summary(df_train$aggre_21_ci)
+summary(df_test$aggre_21_ci) # similar
 
 # linear regression
 lm_model <-
-  lm(citation ~ .,
+  lm(aggre_21_ci ~ .,
      data = df_train)
 
 # the dott means that all rest variables
