@@ -25,7 +25,7 @@ base_data <-
   )
 
 # remove duplicates row
-base_data <- base_data[!duplicated(base_data), ]
+base_data <- base_data[!duplicated(base_data),]
 
 # create the author numbers variable
 base_data$author_number <-
@@ -245,220 +245,203 @@ for (i in 1:nrow(base_data_with_date)) {
   
 }
 
-# create a new variable as year interval to 2022
+# create a new variable as year interval to 2021
 base_data_with_date$interval <- NA
 base_data_with_date <- base_data_with_date[!is.na(base_data_with_date$year),] 
 
-
-for (i in 1:nrow(base_data_with_date)) {
-  if (base_data_with_date$year[i] == 2010) {
-    base_data_with_date$interval[i] <- 12
-  } else if (base_data_with_date$year[i] == 2011) {
-    base_data_with_date$interval[i] <- 11
-  } else if (base_data_with_date$year[i] == 2012) {
-    base_data_with_date$interval[i] <- 10
-  } else if (base_data_with_date$year[i] == 2013) {
-    base_data_with_date$interval[i] <- 9
-  } else if (base_data_with_date$year[i] == 2014) {
-    base_data_with_date$interval[i] <- 8
-  } else if (base_data_with_date$year[i] == 2015) {
-    base_data_with_date$interval[i] <- 7
-  } else if (base_data_with_date$year[i] == 2016) {
-    base_data_with_date$interval[i] <- 6
-  } else if (base_data_with_date$year[i] == 2017) {
-    base_data_with_date$interval[i] <- 5
-  } else if (base_data_with_date$year[i] == 2018) {
-    base_data_with_date$interval[i] <- 4
-  } else if (base_data_with_date$year[i] == 2019) {
-    base_data_with_date$interval[i] <- 3
-  } else if (base_data_with_date$year[i] == 2020) {
-    base_data_with_date$interval[i] <- 2
-  } else if (base_data_with_date$year[i] == 2021) {
-    base_data_with_date$interval[i] <- 1
-  } else if (base_data_with_date$year[i] == 2022) {
-    base_data_with_date$interval[i] <- 0
-  }
-  
+final_data <- base_data_with_date
+for (i in 1:nrow(final_data)) {
+  if (final_data$year[i] == 2010) {
+    final_data$interval[i] <- 11
+  } else if (final_data$year[i] == 2011) {
+    final_data$interval[i] <- 10
+  } else if (final_data$year[i] == 2012) {
+    final_data$interval[i] <- 9
+  } else if (final_data$year[i] == 2013) {
+    final_data$interval[i] <- 8
+  } else if (final_data$year[i] == 2014) {
+    final_data$interval[i] <- 7
+  } else if (final_data$year[i] == 2015) {
+    final_data$interval[i] <- 6
+  } else if (final_data$year[i] == 2016) {
+    final_data$interval[i] <- 5
+  } else if (final_data$year[i] == 2017) {
+    final_data$interval[i] <- 4
+  } else if (final_data$year[i] == 2018) {
+    final_data$interval[i] <- 3
+  } else if (final_data$year[i] == 2019) {
+    final_data$interval[i] <- 2
+  } else if (final_data$year[i] == 2020) {
+    final_data$interval[i] <- 1
+  } else if (final_data$year[i] == 2021) {
+    final_data$interval[i] <- 0
+  } 
   
 }
 
-base_data_with_date$recency <- NA
-base_data_with_date$recency <- base_data_with_date$interval*12+base_data_with_date$month
-
-
-# include a dummy variable to indicate the superstar
-base_data_with_date$superstar <- NA
-for (i in 1:nrow(base_data_with_date)) {
-  if (get_num_top_journals(base_data_with_date$author_id1[i]) > 0) {
-    base_data_with_date$superstar[i] <- 1
-  } else {
-    base_data_with_date$superstar[i] <- 0
-  }
-  
-  if (get_num_top_journals(base_data_with_date$author_id2[i]) > 0) {
-    base_data_with_date$superstar[i] <- 1
-  } else {
-    base_data_with_date$superstar[i] <- 0
-  }
-  
-  if (get_num_top_journals(base_data_with_date$author_id3[i]) > 0) {
-    base_data_with_date$superstar[i] <- 1
-  } else {
-    base_data_with_date$superstar[i] <- 0
-  }
-  
-  if (get_num_top_journals(base_data_with_date$author_id4[i]) > 0) {
-    base_data_with_date$superstar[i] <- 1
-  } else {
-    base_data_with_date$superstar[i] <- 0
-  }
-
-}
-
-
-# include a dummy variable to indicate the superstar
-# base_data_with_date$superstar1 <- NA
-# for (i in 1:nrow(base_data_with_date)) {
-#   
-#   if (base_data_with_date$hindex_au1[i] > 50 & is.na(base_data_with_date$hindex_au1[i])==FALSE) {
-#     base_data_with_date$superstar1[i] <- 1
-#   } else if (base_data_with_date$hindex_au2[i] > 50 & is.na(base_data_with_date$hindex_au2[i])==FALSE) {
-#     base_data_with_date$superstar1[i] <- 1
-#   } else if (base_data_with_date$hindex_au3[i] > 50 & is.na(base_data_with_date$hindex_au3[i])==FALSE) {
-#     base_data_with_date$superstar1[i] <- 1
-#   } else if (base_data_with_date$hindex_au4[i] > 50 & is.na(base_data_with_date$hindex_au4[i])==FALSE) {
-#     base_data_with_date$superstar1[i] <- 1
-#   } else {
-#     base_data_with_date$superstar1[i] <- 0
-#   }
-#   
-# }
-
-base_data_with_date$superstar2 <- NA
-for (i in 1:nrow(base_data_with_date)) {
-  
-  if (base_data_with_date$mean1_ci[i] > 50 & is.na(base_data_with_date$mean1_ci[i])==FALSE) {
-    base_data_with_date$superstar2[i] <- 1
-  } else if (base_data_with_date$mean2_ci[i] > 50 & is.na(base_data_with_date$mean2_ci[i])==FALSE) {
-    base_data_with_date$superstar2[i] <- 1
-  } else if (base_data_with_date$mean3_ci[i] > 50 & is.na(base_data_with_date$mean3_ci[i])==FALSE) {
-    base_data_with_date$superstar2[i] <- 1
-  } else if (base_data_with_date$mean4_ci[i] > 50 & is.na(base_data_with_date$mean4_ci[i])==FALSE) {
-    base_data_with_date$superstar2[i] <- 1
-  } else {
-    base_data_with_date$superstar2[i] <- 0
-  }
-  
-}
+final_data$recency <- final_data$interval*12+final_data$month
 
 # include minimal hindex
-base_data_with_date$minhindex <- NA
-base_data_with_date$minhindex <- apply(base_data_with_date[,25:28], 1, min, na.rm=TRUE)
+final_data$minhindex <- NA
+final_data$minhindex <- apply(final_data[,25:28], 1, min, na.rm=TRUE)
 
-# number of articles of each paper
-base_data_with_date$num1 <- NA
-base_data_with_date$num2 <- NA
-base_data_with_date$num3 <- NA
-base_data_with_date$num4 <- NA
+# # number of articles of each paper
+# final_data$num1 <- NA
+# final_data$num2 <- NA
+# final_data$num3 <- NA
+# final_data$num4 <- NA
+# 
+# for (i in 1:nrow(final_data)){
+#   if(is.na(final_data$author_id1[[i]])!= TRUE){
+#     final_data[i,44] <- get_num_articles(final_data$author_id1[[i]])
+#   }
+#   
+#   if(is.na(final_data$author_id2[[i]])!= TRUE){
+#     final_data[i,45] <- get_num_articles(final_data$author_id2[[i]])
+#     
+#   }
+#   
+#   if(is.na(final_data$author_id3[[i]])!= TRUE){
+#     final_data[i,46] <- get_num_articles(final_data$author_id3[[i]])
+#     
+#   }
+#   
+#   if(is.na(final_data$author_id4[[i]])!= TRUE){
+#     final_data[i,47] <- get_num_articles(final_data$author_id4[[i]])
+#     
+#   }
+# }
 
-for (i in 1:nrow(base_data_with_date)){
-  if(is.na(base_data_with_date$author_id1[[i]])!= TRUE){
-    base_data_with_date[i,44] <- get_num_articles(base_data_with_date$author_id1[[i]])
-  }
-  
-  if(is.na(base_data_with_date$author_id2[[i]])!= TRUE){
-    base_data_with_date[i,45] <- get_num_articles(base_data_with_date$author_id2[[i]])
-    
-  }
-  
-  if(is.na(base_data_with_date$author_id3[[i]])!= TRUE){
-    base_data_with_date[i,46] <- get_num_articles(base_data_with_date$author_id3[[i]])
-    
-  }
-  
-  if(is.na(base_data_with_date$author_id4[[i]])!= TRUE){
-    base_data_with_date[i,47] <- get_num_articles(base_data_with_date$author_id4[[i]])
-    
-  }
-}
-
-# mean of citation for each author
-base_data_with_date$mean1_ci <- NA
-base_data_with_date$mean2_ci <- NA
-base_data_with_date$mean3_ci <- NA
-base_data_with_date$mean4_ci <- NA
-
-for (i in 1:nrow(base_data_with_date)){
-  base_data_with_date$mean1_ci[i] <- base_data_with_date$totalcite_au1[i]/base_data_with_date$num1[i]
-  base_data_with_date$mean2_ci[i] <- base_data_with_date$totalcite_au2[i]/base_data_with_date$num2[i]
-  base_data_with_date$mean3_ci[i] <- base_data_with_date$totalcite_au3[i]/base_data_with_date$num3[i]
-  base_data_with_date$mean4_ci[i] <- base_data_with_date$totalcite_au4[i]/base_data_with_date$num4[i]
-  
-  
-}
-
-base_data_with_date$meanci_max <- NA
-base_data_with_date$meanci_min <- NA
-base_data_with_date$meanci_mean <- NA
-
-
-base_data_with_date$meanci_max <- apply(base_data_with_date[,48:51], 1, max, na.rm=TRUE)
-base_data_with_date$meanci_min <- apply(base_data_with_date[,48:51], 1, min, na.rm=TRUE)
-base_data_with_date$meanci_mean <- rowMeans(base_data_with_date[,48:51],na.rm = TRUE)
-
+# # mean of citation for each author
+# final_data$mean1_ci <- NA
+# final_data$mean2_ci <- NA
+# final_data$mean3_ci <- NA
+# final_data$mean4_ci <- NA
+# 
+# for (i in 1:nrow(final_data)){
+#   final_data$mean1_ci[i] <- final_data$totalcite_au1[i]/final_data$num1[i]
+#   final_data$mean2_ci[i] <- final_data$totalcite_au2[i]/final_data$num2[i]
+#   final_data$mean3_ci[i] <- final_data$totalcite_au3[i]/final_data$num3[i]
+#   final_data$mean4_ci[i] <- final_data$totalcite_au4[i]/final_data$num4[i]
+#   
+#   
+# }
+# 
+# base_data_with_date$meanci_max <- NA
+# base_data_with_date$meanci_min <- NA
+# base_data_with_date$meanci_mean <- NA
+# 
+# 
+# base_data_with_date$meanci_max <- apply(base_data_with_date[,48:51], 1, max, na.rm=TRUE)
+# base_data_with_date$meanci_min <- apply(base_data_with_date[,48:51], 1, min, na.rm=TRUE)
+# base_data_with_date$meanci_mean <- rowMeans(base_data_with_date[,48:51],na.rm = TRUE)
+# 
 
 # citation of each author at recent year
-base_data_with_date$cite21_1 <- NA
-base_data_with_date$cite21_2 <- NA
-base_data_with_date$cite21_3 <- NA
-base_data_with_date$cite21_4 <- NA
+final_data$cite21_1 <- NA
+final_data$cite21_2 <- NA
+final_data$cite21_3 <- NA
+final_data$cite21_4 <- NA
 
-for (i in 1:nrow(base_data_with_date)){
-  if(is.na(base_data_with_date$author_id1[[i]])!= TRUE){
-    base_data_with_date[i,56] <- get_citation_history(base_data_with_date$author_id1[[i]]) %>% filter(year==2021) %>% select(cites)
+for (i in 1:nrow(final_data)){
+  if(is.na(final_data$author_id1[[i]])!= TRUE){
+    final_data[i,56] <- get_citation_history(final_data$author_id1[[i]]) %>% filter(year==2021) %>% select(cites)
   }
   
-  if(is.na(base_data_with_date$author_id2[[i]])!= TRUE){
-    base_data_with_date[i,57] <- get_citation_history(base_data_with_date$author_id2[[i]]) %>% filter(year==2021) %>% select(cites)
+  if(is.na(final_data$author_id2[[i]])!= TRUE){
+    final_data[i,57] <- get_citation_history(final_data$author_id2[[i]]) %>% filter(year==2021) %>% select(cites)
     
   }
   
-  if(is.na(base_data_with_date$author_id3[[i]])!= TRUE){
-    base_data_with_date[i,58] <- get_citation_history(base_data_with_date$author_id3[[i]]) %>% filter(year==2021) %>% select(cites)
+  if(is.na(final_data$author_id3[[i]])!= TRUE){
+    final_data[i,58] <- get_citation_history(final_data$author_id3[[i]]) %>% filter(year==2021) %>% select(cites)
     
   }
   
-  if(is.na(base_data_with_date$author_id4[[i]])!= TRUE){
-    base_data_with_date[i,59] <- get_citation_history(base_data_with_date$author_id4[[i]]) %>% filter(year==2021) %>% select(cites)
+  if(is.na(final_data$author_id4[[i]])!= TRUE){
+    final_data[i,59] <- get_citation_history(final_data$author_id4[[i]]) %>% filter(year==2021) %>% select(cites)
     
   }
 }
 
-# create the max, min and the mean of the citations of each authors
-base_data_with_date$cinew_max <- NA
-base_data_with_date$cinew_min <- NA
-base_data_with_date$cinew_mean <- NA
+final_data$cinew_min <- apply(final_data[,37:40], 1, min, na.rm=TRUE)
+final_data$cinew_max <- apply(final_data[,37:40], 1, max, na.rm=TRUE)
 
-
-base_data_with_date$cinew_max <- apply(base_data_with_date[,56:59], 1, max, na.rm=TRUE)
-base_data_with_date$cinew_min <- apply(base_data_with_date[,56:59], 1, min, na.rm=TRUE)
-base_data_with_date$cinew_mean <- rowMeans(base_data_with_date[,56:59],na.rm = TRUE)
-
-
-
-base_data_with_date$superstar3 <- NA
-for (i in 1:nrow(base_data_with_date)) {
+for (i in 1:nrow(final_data)) {
   
-  if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
-    base_data_with_date$superstar3[i] <- 1
-  } else if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
-    base_data_with_date$superstar3[i] <- 1
-  } else if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
-    base_data_with_date$superstar3[i] <- 1
-  } else if (base_data_with_date$cinew_max[i] > 1500 & is.na(base_data_with_date$cinew_max[i])==FALSE) {
-    base_data_with_date$superstar3[i] <- 1
+  if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+    final_data$superstar3[i] <- 1
+  } else if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+    final_data$superstar3[i] <- 1
+  } else if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+    final_data$superstar3[i] <- 1
+  } else if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+    final_data$superstar3[i] <- 1
   } else {
-    base_data_with_date$superstar3[i] <- 0
+    final_data$superstar3[i] <- 0
   }
   
+}
+
+final_data$minhindex <- apply(final_data[,18:21], 1, min, na.rm=TRUE)
+
+
+# scrape the citation infos for each year of every paper from google scholar
+final_data$ci2010 <- NA
+final_data$ci2011 <- NA
+final_data$ci2012 <- NA
+final_data$ci2013 <- NA
+final_data$ci2014 <- NA
+final_data$ci2015 <- NA
+final_data$ci2016 <- NA
+final_data$ci2017 <- NA
+final_data$ci2018 <- NA
+final_data$ci2019 <- NA
+final_data$ci2020 <- NA
+final_data$ci2021 <- NA
+
+# create a driver from Rselenium
+port <- random_port(min_port = 49152, max_port = 65536)
+rD <- rsDriver(browser = "chrome", port = port, chromever="107.0.5304.62")
+
+# get the client
+remDr <- rD$client
+
+# set time outs to give the page the change to first fully load before
+# we try to get information form it
+remDr$setTimeout(type = "implicit", milliseconds = 10000)
+remDr$setTimeout(type = "page load", milliseconds = 10000)
+# for (i in 1:nrow(data_with_date)) {
+#   year_ab <- data_with_date$year[i]
+#     # split the doi to construct the url 
+#     doi1 <- str_split(data_with_date$DOI, "/")[[i]][1]
+#     doi2 <- str_split(data_with_date$DOI, "/")[[i]][2]
+#     if (is.na(str_split(data_with_date$DOI, "/")[[i]][3]) != TRUE) { # if there is a third part of doi
+#       doi3 <- str_split(data_with_date$DOI, "/")[[i]][3]
+#     }
+#     for (year in year_ab:2021) {
+#     # get the author ids
+#     citations_year <- scrape_google_citations_year(doi1, doi2, doi3, year, port)
+#     
+#     # fill the base data
+#     data_with_date[i,62-2021+year] <- citations_year
+#   }
+# }
+
+final_data <- final_data %>% filter(year!=2022)
+for (i in 1:nrow(final_data)) {
+  year_ab <- final_data$year[i]
+  # split the doi to construct the url 
+  doi1 <- str_split(final_data$DOI, "/")[[i]][1]
+  doi2 <- str_split(final_data$DOI, "/")[[i]][2]
+  if (is.na(str_split(final_data$DOI, "/")[[i]][3]) != TRUE) { # if there is a third part of doi
+    doi3 <- str_split(final_data$DOI, "/")[[i]][3]
+  }
+  for (year in year_ab:2021) {
+    # get the author ids
+    citations_year <- scrape_google_citations_year(doi1, doi2, doi3, year, port)
+    
+    # fill the base data
+    final_data[i,61-2021+year] <- citations_year
+  }
 }

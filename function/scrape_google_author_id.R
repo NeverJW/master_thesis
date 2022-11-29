@@ -1,4 +1,4 @@
-# scrape the author id of google scholar 
+# scrape the author id of google scholar
 # for the purpose that getting information of authors via package scholars
 
 scrape_google_author_id <-
@@ -63,9 +63,9 @@ scrape_google_author_id <-
           html_attr("href")
         
         author_id1 <- str_split(link[2], "=")[[1]][2]
-     })
+      })
     } else {
-      author_id1 <- NA   
+      author_id1 <- NA
     }
     
     # navigate to the created url, scrape the second author id
@@ -90,8 +90,8 @@ scrape_google_author_id <-
           html_nodes(xpath = "//link") %>%
           html_attr("href")
         
-        author_id2 <- str_split(link[2], "=")[[1]][2]  
-     })
+        author_id2 <- str_split(link[2], "=")[[1]][2]
+      })
     } else {
       author_id2 <- NA   # if there is no author anymore then NA
     }
@@ -109,7 +109,6 @@ scrape_google_author_id <-
       }, error = function(e) {
         author_id3 <- NA
       }, finally = {
-        
         # extract the html of the page
         page_html <- read_html(remDr$getPageSource()[[1]])
         
@@ -118,7 +117,7 @@ scrape_google_author_id <-
           html_nodes(xpath = "//link") %>%
           html_attr("href")
         
-        # get the author id 
+        # get the author id
         author_id3 <- str_split(link[2], "=")[[1]][2]
         
         Sys.sleep(2)

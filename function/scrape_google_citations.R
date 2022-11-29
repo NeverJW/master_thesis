@@ -1,9 +1,7 @@
-# scrape the author id of google scholar 
-# for the purpose that getting information of authors via package scholars
+# scrape the citations from google scholar
 
 scrape_google_citations <-
   function(doi1, doi2, doi3, port = 800L) {
-    
     # if there is no third part of doi
     if (is.na(str_split(base_data$DOI, "/")[[i]][3]) == TRUE) {
       url <-
@@ -35,12 +33,12 @@ scrape_google_citations <-
     
     # get the url of the citations
     url_ci <- read_html(remDr$getPageSource()[[1]]) %>%
-      html_elements(css="a:nth-child(3)")
+      html_elements(css = "a:nth-child(3)")
     
-    citations <- 
-      str_split(tail(url_ci,2)[1], ">")[[1]][2] %>%
+    citations <-
+      str_split(tail(url_ci, 2)[1], ">")[[1]][2] %>%
       str_extract_all("\\(?[0-9,.]+\\)?")
     
-      citations <- as.numeric(citations[[1]][1])
+    citations <- as.numeric(citations[[1]][1])
     return(citations)
   }

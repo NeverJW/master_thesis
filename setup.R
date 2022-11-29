@@ -19,6 +19,7 @@ if (!require("magrittr")) install.packages("magrittr")
 if (!require("reticulate")) install.packages("reticulate")
 if (!require("viridis")) install.packages("viridis")
 if (!require("ggsci")) install.packages("ggsci")
+if (!require("xgboost")) install.packages("xgboost")
 
 library(tidyverse)
 library(xml2)
@@ -40,7 +41,9 @@ library(magrittr)
 library(reticulate)
 library(viridis)
 library(ggsci)
+library(xgboost)
 
 # Source all R-files in the Functions folder
 source.all("function/", grepstring="\\.R")
+
 

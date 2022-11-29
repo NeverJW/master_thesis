@@ -1,4 +1,4 @@
-### get 2 years impact factor for four jounals 
+### get 2 years impact factor for four jounals
 # journal of Marketing
 url <-
   "https://www.scijournal.org/impact-factor-of-journal-of-marketing.shtml"
@@ -13,7 +13,7 @@ impactfin2022 <- 6.664
 marketingresearch_if <-
   get_2impact_factor(url2, impactfin2022, "Journal of Marketing Research")
 
-# marketing science 
+# marketing science
 url3 <-
   "https://www.scijournal.org/impact-factor-of-marketing-science.shtml"
 impactfin2022 <- 3.716
@@ -28,4 +28,8 @@ consumerresearch_if <-
   get_2impact_factor(url4, impactfin2022, "Journal of Consumer Research")
 
 # merge four data frame
-impactf_df <- rbind.data.frame(marketing_if, marketingresearch_if, marketingscience_if, consumerresearch_if)
+impactf_df <-
+  rbind.data.frame(marketing_if,
+                   marketingresearch_if,
+                   marketingscience_if,
+                   consumerresearch_if)
