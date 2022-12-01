@@ -17,12 +17,13 @@ hist(final_data$citation,
 # model_data <-
 #   data %>% filter(aggre_21_ci < 1000 & page > 1)
 # for the machine learning model
-# filter the paper which has a "normal" citations (larger than 1300)
-# in order to avoid the outlier influence
+# filter the paper which has a larger than 1000 citations 
 data <- final_data[, c(8:13, 26, 27, 30, 31, 33, 34, 41, 44:45, 48, 49, 63)]
 
 model_data <-
   data %>% filter(citation < 1000 & citation > 0 & page > 0)
+model_data <-
+  data %>% filter(citation > 1000 &  citation > 0 & page > 0)
 
 # select the variable we used
 # model_data <-
@@ -124,32 +125,6 @@ modelr::mse(lm_model, df_test)
 
 # RMSE: root mean square error
 modelr::rmse(lm_model, df_test)
-
-######################### elastic net ##############################
-# handle missing value
-enet_data <- model_data[complete.cases(model_data), ]
-set.seed(42)
-# partition data in training and test sample: 80% vs. 20%
-trainIndex <-
-  caret::createDataPartition(enet_data$citation,
-                             p = 0.8,
-                             times = 1,
-                             list = FALSE)
-# convert list to data frames
-df_train <- enet_data[trainIndex,] # training sample
-df_test <- enet_data[-trainIndex,] # test sample
-
-
-enet_model <-
-  caret::train(
-    citation ~ .,
-    data = df_train,
-    method = "enet",
-    trControl = trainControl("cv", number = 10)
-  )
-# inspect model
-enet_model$bestTune  # LASSO
-
 
 ######################### svm regression ###################
 svm_model <-

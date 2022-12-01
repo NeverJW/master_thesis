@@ -252,29 +252,29 @@ base_data_with_date <- base_data_with_date[!is.na(base_data_with_date$year),]
 final_data <- base_data_with_date
 for (i in 1:nrow(final_data)) {
   if (final_data$year[i] == 2010) {
-    final_data$interval[i] <- 11
+    final_data$interval[i] <- 12
   } else if (final_data$year[i] == 2011) {
-    final_data$interval[i] <- 10
+    final_data$interval[i] <- 11
   } else if (final_data$year[i] == 2012) {
-    final_data$interval[i] <- 9
+    final_data$interval[i] <- 10
   } else if (final_data$year[i] == 2013) {
-    final_data$interval[i] <- 8
+    final_data$interval[i] <- 9
   } else if (final_data$year[i] == 2014) {
-    final_data$interval[i] <- 7
+    final_data$interval[i] <- 8
   } else if (final_data$year[i] == 2015) {
-    final_data$interval[i] <- 6
+    final_data$interval[i] <- 7
   } else if (final_data$year[i] == 2016) {
-    final_data$interval[i] <- 5
+    final_data$interval[i] <- 6
   } else if (final_data$year[i] == 2017) {
-    final_data$interval[i] <- 4
+    final_data$interval[i] <- 5
   } else if (final_data$year[i] == 2018) {
-    final_data$interval[i] <- 3
+    final_data$interval[i] <- 4
   } else if (final_data$year[i] == 2019) {
-    final_data$interval[i] <- 2
+    final_data$interval[i] <- 3
   } else if (final_data$year[i] == 2020) {
-    final_data$interval[i] <- 1
+    final_data$interval[i] <- 2
   } else if (final_data$year[i] == 2021) {
-    final_data$interval[i] <- 0
+    final_data$interval[i] <- 1
   } 
   
 }

@@ -4,44 +4,57 @@ tf$constant("Hellow Tensorflow")
 # devtools::install_github("rstudio/reticulate")
 source("setup.R")
 
-data <- time_series_final[,c(8:12,30,33,44:47,62:63)]
-# data$ab_pop <- if(data$abstract_pop==TRUE){}
-data <- as.matrix(data)
-dimnames(data) <- NULL
-data <- na.omit(data)
+data <- final_data[, c(8:13, 26, 27, 30, 31, 33, 34, 41, 44:45, 48, 49, 63)]
 
-set.seed(1234)
+model_data <-
+  data %>% filter(citation < 4000 & citation > 0 & page > 0)
+
+if(isTRUE(model_data$abstract_pop)){model_data$abstract_pop=1} else {model_data$abstract_pop=0}
+
+deep_data <- as.matrix(model_data)
+dimnames(deep_data) <- NULL
+deep_data <- na.omit(deep_data)
+
+
+set.seed(42)
 ind <-
-  sample(2, nrow(data), replace = T, prob = c(.7, .3)) #从 1，2 中有放回抽取一个数，概率分别为（0.7，0.3）
-training <- data[ind == 1, c(1:11, 13)]
-test <- data[ind == 2, c(1:11, 13)]
-trainingtarget <- data[ind == 1, 12]
-testtarget <- data[ind == 2, 12]
+  sample(2, nrow(deep_data), replace = T, prob = c(.7, .3)) #从 1，2 中有放回抽取一个数，概率分别为（0.7，0.3）
+training <- deep_data[ind == 1, c(1:9,11:18)]
+test <- deep_data[ind == 2, c(1:9,11:18)]
+trainingtarget <- deep_data[ind == 1, 10]
+testtarget <- deep_data[ind == 2, 10]
+
+df_train <- df_train %>% na.omit()
+df_test <- df_test %>% na.omit()
+
+training <- df_train[,-10] %>% as.matrix()
+test <- df_test[,-10]%>% as.matrix()
+trainingtarget <- df_train[10] %>% as.matrix()
+testtarget <- df_test[10] %>% as.matrix()
 
 m <- colMeans(training)
 s <- apply(training, 2, sd)
 training <- scale(training, center = m, scale = s)
 test <- scale(test, center = m, scale = s)
 model <- keras_model_sequential() %>% 
-  layer_dense(units = 30, activation = 'relu', input_shape = c(12)) %>%
-  layer_dense(units = 15) %>%
+  layer_dense(units = 30, activation = 'relu', input_shape = c(17)) %>%
+  layer_dense(units = 15, activation = 'relu') %>%
   layer_dense(units = 1)
 
 summary(model)
 model %>% compile(loss = 'mse', #损失函数
                   optimizer = 'rmsprop', #优化器
-                  metrics = 'mse'#监控度量
+                  metrics = 'mae'#监控度量
 )
 mymodel <- model %>%
   fit(training,
       trainingtarget,
-      epochs = 400,
-      batch_size = 64,
-      validation_split = 0.4)
+      epochs = 300,
+      batch_size = 32,
+      validation_split = 0.3)
 model %>% keras::evaluate(test, testtarget)
 
 
-# data %<>% mutate_if(is.factor, as.numeric)
 pred <- predict(model,test) 
 mean((testtarget-pred)^2)
 
