@@ -48,6 +48,4 @@ get_download_time <- function(doi1, doi2, port = 400L) {
   
   download_time <- download_time[[1]][2]
   
-  
-  
 }

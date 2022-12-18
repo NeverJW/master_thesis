@@ -1,4 +1,5 @@
-final_data <- final_data[,-c(1, 6, 9, 10, 12, 15, 19, 44:53)]
+# select final data
+final_data <- final_data[, -c(1, 6, 9, 10, 12, 15, 19, 44:53)]
 
 # whether the paper is the commentary paper
 final_data$commentary <- NA
@@ -12,17 +13,21 @@ for (i in 1:nrow(final_data)) {
   
 }
 
-count(final_data$commentary==1) # 38
+count(final_data$commentary == 1) # 39
 
+# superstar dummy variable
 for (i in 1:nrow(final_data)) {
-  
-  if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+  if (final_data$cinew_max[i] > 1500 &
+      is.na(final_data$cinew_max[i]) == FALSE) {
     final_data$superstar3[i] <- 1
-  } else if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+  } else if (final_data$cinew_max[i] > 1500 &
+             is.na(final_data$cinew_max[i]) == FALSE) {
     final_data$superstar3[i] <- 1
-  } else if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+  } else if (final_data$cinew_max[i] > 1500 &
+             is.na(final_data$cinew_max[i]) == FALSE) {
     final_data$superstar3[i] <- 1
-  } else if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
+  } else if (final_data$cinew_max[i] > 1500 &
+             is.na(final_data$cinew_max[i]) == FALSE) {
     final_data$superstar3[i] <- 1
   } else {
     final_data$superstar3[i] <- 0
@@ -46,27 +51,9 @@ for (i in 1:nrow(final_data)) {
   
 }
 
-
-# # create a normalization function
-# normalize <- function(x) {
-#   return ((x - min(x,na.rm = TRUE)) / (max(x,na.rm = TRUE) - min(x,na.rm = TRUE)))
-# }
-# 
-# model_data_stand <- as.data.frame(lapply(model_data[2:22], normalize))
-# model_data_stand <- data.frame(citation = model_data$citation, model_data_stand)
-
 # create the variables
-final_data$aggre_21_ci <- rowSums(final_data[,50:61],na.rm = TRUE)
+final_data$aggre_21_ci <- rowSums(final_data[, 50:61], na.rm = TRUE)
 final_data <- final_data %>% filter(!is.na(aggre_21_ci))
-# 
-# # create target variable citations in the first 5 year after publication year
-# final_data$five_ci <- NA 
-#   for (i in 1:2805) {
-#     if (final_data$year[i] <= 2017) {
-#       final_data$five_ci[i] <- rowSums(final_data[,(final_data$year[i]-1960):(final_data$year[i]-1960+4)],na.rm = TRUE) 
-#     } else {final_data$five_ci[i] <- NA}
-#   }
-# # 
 
 # create the variable of total first two year citations
 for (i in 1:2805) {
@@ -78,3 +65,42 @@ for (i in 1:2805) {
   }
 }
 final_data$agg_first_two <- as.numeric(final_data$agg_first_two)
+
+# convert abstract to dummy variable
+for (i in 1:2675) {
+  if (isTRUE(final_data$abstract_pop[i])) {
+    final_data$abstract_pop[i] = 1
+  }
+}
+
+# descriptive statistics
+labs <- c(
+  'number of authors',
+  'page',
+  'reference counts',
+  'journal impact factor',
+  'length of title',
+  'abstract popularity - dummy',
+  'mean of hindex',
+  'maximum of author citations',
+  'publication month',
+  'citations(Y)',
+  'recency',
+  'minimum of hindex',
+  'maximum of citations in 2021',
+  'superstar - dummy',
+  'commentary - dummy',
+  'difference of author citations - dummy',
+  'citations in the first two years'
+)
+
+
+sumtable(
+  model_data,
+  summ = c('notNA(x)',
+           'mean(x)',
+           'median(x)',
+           'min(x)', 'max(x)'),
+  summ.names = list(c('N', 'Mean', 'Median', 'Min', 'Max')),
+  labels = labs
+)
