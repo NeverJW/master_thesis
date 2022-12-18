@@ -63,16 +63,6 @@ base_data <-
 # add the variable which indicate the length of title
 base_data$title_length <- str_count(base_data$title, " ") + 1
 
-# add the variable which indicate whether keywords contain the most popular words of marketing papers
-base_data$keyword_pop <-
-  str_detect(
-    base_data$keywords,
-    "brands loyalty|augmented reality|digital marketing|influencer marketing|artificial intelligence|machine learning|big data|personalization|multi-channel|video marketing"
-  )
-
-# see how many papers does include popular words in the keyword part
-length(base_data$keyword_pop[base_data$keyword_pop == TRUE])  # 213 papers
-
 # add the variable which indicate whether abstract contain the most popular words of marketing papers
 base_data$abstract_pop <-
   str_detect(
@@ -81,7 +71,7 @@ base_data$abstract_pop <-
   )
 
 # see how many papers does include popular words in the abstract part
-length(base_data$abstract_pop[base_data$abstract_pop == TRUE])  # 200 papers
+length(base_data$abstract_pop[base_data$abstract_pop == TRUE])
 
 ################################### get infos of author ##################
 # remove na of variable DOI and author number
@@ -161,7 +151,6 @@ for (i in 1:nrow(base_data)){
 
 # check whether all data is scraped 
 which(is.na(base_data$totalcite_au1), arr.ind=TRUE)
-
 which(is.na(base_data$author_id1), arr.ind=TRUE) 
 # equal, the infos of author are all scraped 
 
@@ -245,7 +234,7 @@ for (i in 1:nrow(base_data_with_date)) {
   
 }
 
-# create a new variable as year interval to 2021
+# create a new variable as year interval to 2022
 base_data_with_date$interval <- NA
 base_data_with_date <- base_data_with_date[!is.na(base_data_with_date$year),] 
 
@@ -285,58 +274,6 @@ final_data$recency <- final_data$interval*12+final_data$month
 final_data$minhindex <- NA
 final_data$minhindex <- apply(final_data[,25:28], 1, min, na.rm=TRUE)
 
-# # number of articles of each paper
-# final_data$num1 <- NA
-# final_data$num2 <- NA
-# final_data$num3 <- NA
-# final_data$num4 <- NA
-# 
-# for (i in 1:nrow(final_data)){
-#   if(is.na(final_data$author_id1[[i]])!= TRUE){
-#     final_data[i,44] <- get_num_articles(final_data$author_id1[[i]])
-#   }
-#   
-#   if(is.na(final_data$author_id2[[i]])!= TRUE){
-#     final_data[i,45] <- get_num_articles(final_data$author_id2[[i]])
-#     
-#   }
-#   
-#   if(is.na(final_data$author_id3[[i]])!= TRUE){
-#     final_data[i,46] <- get_num_articles(final_data$author_id3[[i]])
-#     
-#   }
-#   
-#   if(is.na(final_data$author_id4[[i]])!= TRUE){
-#     final_data[i,47] <- get_num_articles(final_data$author_id4[[i]])
-#     
-#   }
-# }
-
-# # mean of citation for each author
-# final_data$mean1_ci <- NA
-# final_data$mean2_ci <- NA
-# final_data$mean3_ci <- NA
-# final_data$mean4_ci <- NA
-# 
-# for (i in 1:nrow(final_data)){
-#   final_data$mean1_ci[i] <- final_data$totalcite_au1[i]/final_data$num1[i]
-#   final_data$mean2_ci[i] <- final_data$totalcite_au2[i]/final_data$num2[i]
-#   final_data$mean3_ci[i] <- final_data$totalcite_au3[i]/final_data$num3[i]
-#   final_data$mean4_ci[i] <- final_data$totalcite_au4[i]/final_data$num4[i]
-#   
-#   
-# }
-# 
-# base_data_with_date$meanci_max <- NA
-# base_data_with_date$meanci_min <- NA
-# base_data_with_date$meanci_mean <- NA
-# 
-# 
-# base_data_with_date$meanci_max <- apply(base_data_with_date[,48:51], 1, max, na.rm=TRUE)
-# base_data_with_date$meanci_min <- apply(base_data_with_date[,48:51], 1, min, na.rm=TRUE)
-# base_data_with_date$meanci_mean <- rowMeans(base_data_with_date[,48:51],na.rm = TRUE)
-# 
-
 # citation of each author at recent year
 final_data$cite21_1 <- NA
 final_data$cite21_2 <- NA
@@ -367,6 +304,7 @@ for (i in 1:nrow(final_data)){
 final_data$cinew_min <- apply(final_data[,37:40], 1, min, na.rm=TRUE)
 final_data$cinew_max <- apply(final_data[,37:40], 1, max, na.rm=TRUE)
 
+# dummy variable superstar
 for (i in 1:nrow(final_data)) {
   
   if (final_data$cinew_max[i] > 1500 & is.na(final_data$cinew_max[i])==FALSE) {
@@ -383,6 +321,7 @@ for (i in 1:nrow(final_data)) {
   
 }
 
+# minimum of hindex within authors
 final_data$minhindex <- apply(final_data[,18:21], 1, min, na.rm=TRUE)
 
 
@@ -411,22 +350,6 @@ remDr <- rD$client
 # we try to get information form it
 remDr$setTimeout(type = "implicit", milliseconds = 10000)
 remDr$setTimeout(type = "page load", milliseconds = 10000)
-# for (i in 1:nrow(data_with_date)) {
-#   year_ab <- data_with_date$year[i]
-#     # split the doi to construct the url 
-#     doi1 <- str_split(data_with_date$DOI, "/")[[i]][1]
-#     doi2 <- str_split(data_with_date$DOI, "/")[[i]][2]
-#     if (is.na(str_split(data_with_date$DOI, "/")[[i]][3]) != TRUE) { # if there is a third part of doi
-#       doi3 <- str_split(data_with_date$DOI, "/")[[i]][3]
-#     }
-#     for (year in year_ab:2021) {
-#     # get the author ids
-#     citations_year <- scrape_google_citations_year(doi1, doi2, doi3, year, port)
-#     
-#     # fill the base data
-#     data_with_date[i,62-2021+year] <- citations_year
-#   }
-# }
 
 final_data <- final_data %>% filter(year!=2022)
 for (i in 1:nrow(final_data)) {
@@ -445,3 +368,6 @@ for (i in 1:nrow(final_data)) {
     final_data[i,61-2021+year] <- citations_year
   }
 }
+
+# select the data which has >0 page
+final_data <- final_data %>% filter(page>0)
