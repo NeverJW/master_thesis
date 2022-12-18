@@ -58,6 +58,3 @@ scrape_google_citations_year <-
     
     return(num_citation)
   }
-
-
-
